@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from app.src.schemas.user import UserRegister, UserLogin, UserProfile, ChangePassword, ForgetPassword, VerifyOTP
 from app.src.db.database import get_db
 from app.src.models.user import User
-from app.src.utils.exceptions import EmailAlreadyRegisteredException, InvalidCredentialsException, UserNotFoundException
+from app.src.utils.exceptions import EmailAlreadyRegisteredException, InvalidCredentialsException, UserNotFoundException, OTPNotFoundException, InvalidOTPException
 from app.src.core.security import get_current_user, hashed_password, verify_password, create_token
 from app.src.utils.otp import generate_otp
 from app.src.models.notification import Notification
