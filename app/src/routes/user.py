@@ -5,7 +5,7 @@ from app.src.schemas.user import UserRegister, UserLogin, UserProfile, ChangePas
 from app.src.db.database import get_db
 from app.src.models.user import User
 from app.src.utils.exceptions import EmailAlreadyRegisteredException, InvalidCredentialsException, UserNotFoundException, OTPNotFoundException, InvalidOTPException
-from app.src.core.security import get_current_user, hashed_password, verify_password, create_token
+from app.src.core.security import get_current_user, hashed_password, verify_password, create_token, required_role
 from app.src.utils.otp import generate_otp
 from app.src.models.notification import Notification
 from app.src.security.manager import Manager
@@ -55,7 +55,7 @@ async def user_login(user:UserLogin, db:Session=Depends(get_db)):
     
     existing_user=db.query(User).filter(User.email == user.email).first()
     
-    if not existing_user or existing_user.password != user.password:
+    if not existing_user or not verify_password(existing_user.password, user.password):
         raise InvalidCredentialsException
     
     # create token
