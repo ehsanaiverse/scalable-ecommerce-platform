@@ -10,7 +10,7 @@ from app.src.utils.otp import generate_otp
 from app.src.models.notification import Notification
 from app.src.security.manager import Manager
 
-router = APIRouter()
+router = APIRouter(prefix="/user", tags=["User"])
 
 @router.post('/register')
 async def register(user:UserRegister, db:Session=Depends(get_db)):
