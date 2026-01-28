@@ -8,6 +8,7 @@ from app.src.routes.products import router as product_routes
 from app.src.routes.inventory import router as inventory_routes
 from app.src.routes.cart import router as cart_routes
 from app.src.routes.categories import router as category_routes
+from app.src.routes.orders import router as order_routes
 
 
 @asynccontextmanager
@@ -30,6 +31,7 @@ app.include_router(product_routes)
 app.include_router(inventory_routes)
 app.include_router(category_routes)
 app.include_router(cart_routes)
+app.include_router(order_routes)
 
 
 
