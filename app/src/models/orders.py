@@ -15,6 +15,7 @@ class Order(Base):
     # Relationships
     user = relationship("User", backref="orders")
     items = relationship("OrderItem", back_populates="order", cascade="all, delete-orphan")
+    payment = relationship("Payment", back_populates="order", uselist=False)
 
 
 
