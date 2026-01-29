@@ -27,16 +27,41 @@ def get_inventory(
 @router.put('/admin/inventory/{product_id}', response_model=InventorySchema)
 def update_inventory(
     product_id: int, 
-    inventory: InventorySchema, 
+    payload: InventorySchema, 
     db: Session = Depends(get_db), 
     current_user: dict = Depends(required_role("admin"))
 ):
-    existing_inventory = db.query(Inventory).filter(Inventory.product_id == product_id).first()
-    if not existing_inventory:
+    db_inventory = db.query(Inventory).filter(Inventory.product_id == product_id).first()
+    if not db_inventory:
         
          raise HTTPException(status_code=404, detail="Inventory record not found")
     
-    existing_inventory.stock_quantity = inventory.stock_quantity
+    if payload.stock_quantity < 0:
+        raise HTTPException(status_code=400, detail="Stock cannot be negative")
+    
+    db_inventory.stock_quantity = payload.stock_quantity
     db.commit()
-    db.refresh(existing_inventory)
-    return existing_inventory
+    db.refresh(db_inventory)
+    return db_inventory
+
+
+
+@router.delete('/admin/inventory/{product_id}')
+def delete_inventory(
+    product_id: int,
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(required_role("admin"))
+):
+    inventory = (
+        db.query(Inventory)
+        .filter(Inventory.product_id == product_id)
+        .first()
+    )
+
+    if not inventory:
+        raise HTTPException(status_code=404, detail="Inventory record not found")
+
+    db.delete(inventory)
+    db.commit()
+    
+    return {"message": "Inventory record deleted successfully"}
