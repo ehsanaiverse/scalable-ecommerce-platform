@@ -8,6 +8,7 @@ class Product(Base):
     name = Column(String, nullable=False)
     description = Column(Text, nullable=True)
     price = Column(Float, nullable=False)
+    image_path = Column(String, nullable=False)
     
     category_id = Column(Integer, ForeignKey('categories.id'), nullable=False)
     category_rel = relationship("Category", back_populates="products")
