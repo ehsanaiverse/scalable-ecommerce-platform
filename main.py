@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
+from fastapi.staticfiles import StaticFiles
 
 from app.src.db.database import Base, engine
 from app.src.core.security import create_default_admin
@@ -9,6 +10,7 @@ from app.src.routes.inventory import router as inventory_routes
 from app.src.routes.cart import router as cart_routes
 from app.src.routes.categories import router as category_routes
 from app.src.routes.orders import router as order_routes
+from app.src.routes.payments import router as payment_routes
 
 
 @asynccontextmanager
@@ -17,14 +19,14 @@ async def lifespan(app: FastAPI):
     create_default_admin()
     yield
 
-app = FastAPI(lifespan=lifespan)
+app = FastAPI(lifespan=lifespan, title="Scalable E-Commerce Platform")
 
 @app.get("/")
 def home():
     return {"message": "Welcome to the E-Commerce Platform API"}
 
 
-
+app.mount("/static", StaticFiles(directory="app/static"), name="static")
 
 app.include_router(user_routes)
 app.include_router(product_routes)
@@ -32,6 +34,7 @@ app.include_router(inventory_routes)
 app.include_router(category_routes)
 app.include_router(cart_routes)
 app.include_router(order_routes)
+app.include_router(payment_routes)
 
 
 
