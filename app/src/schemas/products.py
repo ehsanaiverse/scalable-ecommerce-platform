@@ -15,9 +15,11 @@ class ProductUpdate(BaseModel):
     description: Optional[str] = None
     price: Optional[float] = None
     category_id: Optional[int] = None
+    image_path: Optional[str] = None
 
 class ProductResponse(ProductBase):
     id: int
-
+    image_path: str
+    
     class Config:
         from_attributes = True
