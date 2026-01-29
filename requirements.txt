@@ -8,3 +8,5 @@ requests
 email-validator
 bcrypt
 python-jose[cryptography]
+stripe
+python-multipart
