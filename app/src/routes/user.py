@@ -23,7 +23,7 @@ async def register(user:UserRegister, db:Session=Depends(get_db)):
     new_user = User(
         fullname = user.fullname,
         email = user.email,
-        password = user.password
+        password = hashed_password(user.password)
     )
     
     db.add(new_user)
