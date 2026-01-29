@@ -10,19 +10,19 @@ from app.src.utils.exceptions import UnauthorizedException
 
 router = APIRouter(tags=['Inventory'])
 
-@router.get('/admin/inventory')
-def display_inventory(db: Session = Depends(get_db), current_user: dict = Depends(required_role("admin"))):
-    # Check if the user is an admin
-    is_admin = db.query(User).filter(User.email == current_user["email"]).first()
-    if not is_admin:
-        raise UnauthorizedException
-    # Query the database to get all inventory items
-    inventory_items = db.query(Inventory, Product).join(Product, Inventory.product_id == Product.id).all()
-
-    if not inventory_items:
+@router.get(
+    "/admin/inventory",
+    response_model=list[InventoryResponse]
+)
+def get_inventory(
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(required_role("admin"))
+):
+    inventory = db.query(Inventory).all()
+    if not inventory:
         raise HTTPException(status_code=404, detail="Inventory is empty")
+    return inventory
 
-    return inventory_items
 
 @router.put('/admin/inventory/{product_id}', response_model=InventorySchema)
 def update_inventory(
@@ -33,8 +33,7 @@ def update_inventory(
 ):
     existing_inventory = db.query(Inventory).filter(Inventory.product_id == product_id).first()
     if not existing_inventory:
-         # If product exists but no inventory record, maybe create it? 
-         # For now assume inventory exists from product creation.
+        
          raise HTTPException(status_code=404, detail="Inventory record not found")
     
     existing_inventory.stock_quantity = inventory.stock_quantity
